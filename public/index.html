@@ -1190,11 +1190,16 @@ function drawHUD(){
   ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(W/2-50,28,100,52);txt(match.training?'∞':String(Math.ceil(timer/60)),W/2,55,36,GOLD);
 }
 function drawMenu(){
-  drawStage();ctx.fillStyle='rgba(15,21,36,0.6)';ctx.fillRect(0,0,W,H);
-  txt('울곽 파이터',W/2,190,110,GOLD);txt('울산과학고 2D 대전 격투',W/2,270,26,PAPER,'center','Gowun Dodum');
-  ['플레이','온라인 대전','훈련장','조작법'].forEach((s,i)=>{const sel=i===menuIdx;ctx.fillStyle=sel?GOLD:'rgba(255,255,255,0.08)';ctx.fillRect(W/2-160,330+i*66,320,56);txt(s,W/2,358+i*66,30,sel?'#111':PAPER);});
-  if(net.msgT>0){net.msgT--;ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillRect(W/2-260,640,520,40);txt(net.msg,W/2,660,20,GOLD,'center','Gowun Dodum');}
-  txt('W/S 또는 ↑/↓ 이동  ·  G / Space / 숫자패드4 / Enter 선택',W/2,600,18,'#8A96A8','center','Gowun Dodum');
+  drawStage();ctx.fillStyle='rgba(12,17,30,0.82)';ctx.fillRect(0,0,W,H);
+  txt('울곽 파이터',W/2,150,108,GOLD);txt('울산과학고 2D 대전 격투',W/2,228,24,PAPER,'center','Gowun Dodum');
+  const items=['플레이','온라인 대전','훈련장','조작법'],bw=360,bh=58,gap=72,y0=290;
+  items.forEach((s,i)=>{const sel=i===menuIdx,y=y0+i*gap;
+    ctx.fillStyle=sel?GOLD:'#1C2436';ctx.fillRect(W/2-bw/2,y,bw,bh);
+    if(!sel){ctx.strokeStyle='rgba(255,255,255,0.14)';ctx.lineWidth=1.5;ctx.strokeRect(W/2-bw/2+0.5,y+0.5,bw-1,bh-1);}
+    else{ctx.fillStyle='#111';ctx.beginPath();ctx.moveTo(W/2-bw/2+22,y+bh/2-9);ctx.lineTo(W/2-bw/2+36,y+bh/2);ctx.lineTo(W/2-bw/2+22,y+bh/2+9);ctx.fill();}
+    txt(s,W/2,y+bh/2+1,30,sel?'#111':PAPER);});
+  txt('W/S 또는 ↑/↓ 이동  ·  Space / J / G / Enter 선택',W/2,650,17,'#8A96A8','center','Gowun Dodum');
+  if(net.msgT>0){net.msgT--;ctx.fillStyle='rgba(0,0,0,0.7)';ctx.fillRect(W/2-260,40,520,44);txt(net.msg,W/2,62,20,GOLD,'center','Gowun Dodum');}
 }
 function drawControls(){
   drawStage();ctx.fillStyle='rgba(15,21,36,0.75)';ctx.fillRect(0,0,W,H);txt('조작법',W/2,80,60,GOLD);
@@ -1330,13 +1335,13 @@ function lobbyType(e){
   const k=(e.key||'').toUpperCase();if(k.length===1&&/[A-Z0-9]/.test(k)&&lobby.code.length<4)lobby.code+=k;
 }
 function drawOnline(){
-  drawStage();ctx.fillStyle='rgba(15,21,36,0.75)';ctx.fillRect(0,0,W,H);txt('온라인 대전',W/2,140,70,GOLD);
-  if(lobby.mode==='choose'){['방 만들기','방 참가','뒤로'].forEach((s2,i)=>{const sel=i===lobby.sel;ctx.fillStyle=sel?GOLD:'rgba(255,255,255,0.08)';ctx.fillRect(W/2-160,260+i*80,320,62);txt(s2,W/2,291+i*80,32,sel?'#111':PAPER);});
-    txt('W/S 이동 · Space 또는 J 선택 · Esc 뒤로',W/2,540,18,'#8A96A8','center','Gowun Dodum');}
+  drawStage();ctx.fillStyle='rgba(12,17,30,0.82)';ctx.fillRect(0,0,W,H);txt('온라인 대전',W/2,140,70,GOLD);
+  if(lobby.mode==='choose'){['방 만들기','방 참가','뒤로'].forEach((s2,i)=>{const sel=i===lobby.sel,y=273+i*72;ctx.fillStyle=sel?GOLD:'#1C2436';ctx.fillRect(W/2-180,y,360,58);if(!sel){ctx.strokeStyle='rgba(255,255,255,0.14)';ctx.lineWidth=1.5;ctx.strokeRect(W/2-179.5,y+0.5,359,57);}txt(s2,W/2,y+30,30,sel?'#111':PAPER);});
+    txt('W/S 이동 · Space 또는 J 선택 · Esc 뒤로',W/2,560,17,'#8A96A8','center','Gowun Dodum');}
   else if(lobby.mode==='typing'){txt('방 코드 입력',W/2,250,30,PAPER);for(let i=0;i<4;i++){ctx.fillStyle='rgba(255,255,255,0.1)';ctx.fillRect(W/2-150+i*78,290,66,86);ctx.strokeStyle=i===lobby.code.length?GOLD:'#556';ctx.lineWidth=3;ctx.strokeRect(W/2-150+i*78,290,66,86);if(lobby.code[i])txt(lobby.code[i],W/2-117+i*78,334,52,GOLD);}
     txt('영문·숫자 4자리 입력 후 Enter · Backspace 지우기 · Esc 뒤로',W/2,420,18,'#8A96A8','center','Gowun Dodum');}
-  else{txt('방 코드',W/2,240,26,PAPER);txt(lobby.code,W/2,310,96,GOLD);txt('친구에게 이 코드를 알려주세요',W/2,390,22,PAPER,'center','Gowun Dodum');txt('Esc 취소',W/2,540,18,'#8A96A8','center','Gowun Dodum');}
-  if(lobby.status)txt(lobby.status,W/2,470,20,'#7FD8FF','center','Gowun Dodum');
+  else{txt('방 코드',W/2,240,26,PAPER);txt(lobby.code,W/2,310,96,GOLD);txt('친구에게 이 코드를 알려주세요',W/2,390,22,PAPER,'center','Gowun Dodum');txt('Esc 취소',W/2,560,17,'#8A96A8','center','Gowun Dodum');}
+  if(lobby.status)txt(lobby.status,W/2,510,20,'#7FD8FF','center','Gowun Dodum');
   txt('이동 A·D / 점프 W·Space / 가드 S  ·  평타 J  ·  스킬 K · L · ;',W/2,625,18,PAPER,'center','Gowun Dodum');txt('(방향키 + Z 평타 · X C V 스킬도 가능)',W/2,652,15,'#8A96A8','center','Gowun Dodum');
 }
 function drawNetHud(){
